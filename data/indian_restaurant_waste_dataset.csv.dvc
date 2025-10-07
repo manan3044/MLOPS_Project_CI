@@ -1,0 +1,6 @@
+outs:
+- md5: 1d29374c4ce105fc7fe836f9f8e93864
+  size: 537749
+  isexec: true
+  hash: md5
+  path: indian_restaurant_waste_dataset.csv
