@@ -5,49 +5,53 @@ stages:
       - src/data_ingestion.py
       - data/indian_restaurant_waste_dataset.csv
     outs:
-      - data/processed/train_data.csv
-      - data/processed/test_data.csv
+      - data/processed/train.csv
+      - data/processed/test.csv
 
   data_preprocessing:
     cmd: python src/data_processing.py
     deps:
       - src/data_processing.py
-      - data/processed/train_data.csv
-      - data/processed/test_data.csv
+      - data/processed/train.csv
+      - data/processed/test.csv
     outs:
-      - data/processed/processed_data.csv
+      - data/processed/train_preprocessed.csv
+      - data/processed/test_preprocessed.csv
 
   feature_engineering:
     cmd: python src/feature_eng.py
     deps:
       - src/feature_eng.py
-      - data/processed/processed_data.csv
+      - data/processed/train_preprocessed.csv
+      - data/processed/test_preprocessed.csv
     outs:
-      - data/processed/feature_data.csv
+      - data/processed/train_fe.csv
+      - data/processed/test_fe.csv
 
   model_training:
     cmd: python src/model_train.py
     deps:
       - src/model_train.py
-      - data/processed/feature_data.csv
+      - data/processed/train_fe.csv
     params:
       - model_training
     outs:
-      - models/rf_food_waste_model.pkl
-      - models/xgb_food_waste_model.pkl
-      - models/lr_food_waste_model.pkl
+      - models/rf_food_waste_model.joblib
+      - models/xgb_food_waste_model.joblib
+      - models/lr_food_waste_model.joblib
 
   model_evaluation:
     cmd: python src/model_eval.py
     deps:
       - src/model_eval.py
-      - data/processed/feature_data.csv
-      - models/rf_food_waste_model.pkl
-      - models/xgb_food_waste_model.pkl
-      - models/lr_food_waste_model.pkl
+      - data/processed/test_fe.csv
+      - models/rf_food_waste_model.joblib
+      - models/xgb_food_waste_model.joblib
+      - models/lr_food_waste_model.joblib
     params:
       - model_evaluation
     metrics:
       - metrics/metrics.txt
+      - metrics/metrics.json
     outs:
       - metrics/model_comparison.png

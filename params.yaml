@@ -1,36 +1,42 @@
-# params.yaml - consolidated for all src/*.py scripts and dvc.yaml
+# params.yaml - fully aligned with all src/*.py scripts
 
 base:
   random_state: 42
 
 data_ingestion:
-  # path to the original raw CSV (input)
-  data_path: "data/indian_restaurant_waste_dataset.csv"
-  # legacy/alternate name (some scripts used input_path) - keep both for safety
+  # path to the original dataset
   input_path: "data/indian_restaurant_waste_dataset.csv"
-  # output produced by ingestion stage
-  output_path: "data/raw_data.csv"
-  # test split
-  test_size: 0.2
-
-data_preprocessing:
-  input_path: "data/raw_data.csv"
-  output_path: "data/processed/processed_data.csv"
-
-feature_engineering:
-  input_path: "data/processed/processed_data.csv"
-  output_path: "data/processed/feature_data.csv"
-
-model_training:
-  input_path: "data/processed/feature_data.csv"
-  models_output_dir: "models/"
   test_size: 0.2
   random_state: 42
+  # outputs
+  train_output_path: "data/processed/train.csv"
+  test_output_path: "data/processed/test.csv"
 
-  # list of models with hyperparameters and file paths
+data_preprocessing:
+  # inputs are the train/test CSVs from ingestion
+  train_input_path: "data/processed/train.csv"
+  test_input_path: "data/processed/test.csv"
+  # outputs
+  train_output_path: "data/processed/train_preprocessed.csv"
+  test_output_path: "data/processed/test_preprocessed.csv"
+
+feature_engineering:
+  # inputs are the preprocessed CSVs
+  train_input_path: "data/processed/train_preprocessed.csv"
+  test_input_path: "data/processed/test_preprocessed.csv"
+  # outputs
+  train_output_path: "data/processed/train_fe.csv"
+  test_output_path: "data/processed/test_fe.csv"
+
+model_training:
+  # inputs
+  train_data_path: "data/processed/train_fe.csv"
+  # models output directory
+  models_output_dir: "models/"
+  # models hyperparameters
   models:
     random_forest:
-      model_path: "models/rf_food_waste_model.pkl"
+      model_path: "models/rf_food_waste_model.joblib"
       n_estimators: 200
       max_depth: 8
       min_samples_split: 5
@@ -38,7 +44,7 @@ model_training:
       random_state: 42
 
     xgboost:
-      model_path: "models/xgb_food_waste_model.pkl"
+      model_path: "models/xgb_food_waste_model.joblib"
       n_estimators: 300
       learning_rate: 0.05
       max_depth: 6
@@ -47,18 +53,16 @@ model_training:
       random_state: 42
 
     linear_regression:
-      model_path: "models/lr_food_waste_model.pkl"
-      # sklearn LinearRegression has no explicit hyperparams here,
-      # keep placeholder for compatibility
+      model_path: "models/lr_food_waste_model.joblib"
       fit_intercept: True
       normalize: False
 
 model_evaluation:
-  # path to data used for evaluation (test or full feature data)
-  data_path: "data/processed/feature_data.csv"
-  # where evaluation metrics will be saved
-  metrics_output: "metrics/metrics.txt"
-  # comprehensive JSON for DVC metrics
+  # input features for evaluation
+  test_data_path: "data/processed/test_fe.csv"
+  # models directory
+  models_dir: "models/"
+  # outputs
+  metrics_txt: "metrics/metrics.txt"
   metrics_json: "metrics/metrics.json"
-  # optional comparison plot
   comparison_plot: "metrics/model_comparison.png"
