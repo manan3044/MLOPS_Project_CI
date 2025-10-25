@@ -1,32 +1,64 @@
+# File: model_evaluation.py
+
 import pandas as pd
 import joblib
-import yaml
-import numpy as np
-from sklearn.model_selection import train_test_split
+import logging
+import os
+import json
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-params = yaml.safe_load(open("params.yaml"))["model_evaluation"]
+# Logging setup
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+logger = logging.getLogger('model_evaluation')
+logger.setLevel('DEBUG')
 
-model_path = params["model_path"]
-data_path = params["data_path"]
-metrics_output = params["metrics_output"]
+console_handler = logging.StreamHandler()
+console_handler.setLevel('DEBUG')
+log_file_path = os.path.join(log_dir, 'model_evaluation.log')
+file_handler = logging.FileHandler(log_file_path)
+file_handler.setLevel('DEBUG')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s -')
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
-data = pd.read_csv(data_path)
-model = joblib.load(model_path)
 
-X = data.drop(columns=["waste", "date"])
-y = data["waste"]
+def evaluate_model(model, X_test, y_test):
+    y_pred = model.predict(X_test)
+    mae = mean_absolute_error(y_test, y_pred)
+    rmse = mean_squared_error(y_test, y_pred, squared=False)
+    r2 = r2_score(y_test, y_pred)
+    return {"MAE": mae, "RMSE": rmse, "R2": r2}
 
-# Split same as before
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-y_pred = model.predict(X_test)
+def main():
+    try:
+        test_df = pd.read_csv('./data/processed/test_fe.csv')
+        X_test = test_df.drop(columns=['food_waste'])
+        y_test = test_df['food_waste']
 
-mae = mean_absolute_error(y_test, y_pred)
-rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-r2 = r2_score(y_test, y_pred)
+        results = {}
+        for model_file in os.listdir('./models'):
+            if model_file.endswith('.joblib'):
+                model_name = model_file.replace('.joblib', '')
+                model = joblib.load(os.path.join('./models', model_file))
+                logger.info(f"Evaluating {model_name}...")
+                metrics = evaluate_model(model, X_test, y_test)
+                results[model_name] = metrics
 
-with open(metrics_output, "w") as f:
-    f.write(f"MAE: {mae}\nRMSE: {rmse}\nR2: {r2}")
+        with open('metrics.json', 'w') as f:
+            json.dump(results, f, indent=4)
 
-print(f"✅ Evaluation complete.\nMAE: {mae:.2f}, RMSE: {rmse:.2f}, R²: {r2:.2f}")
+        logger.info("All model evaluations completed.")
+        logger.info(f"Metrics saved to metrics.json")
+        logger.debug(results)
+
+    except Exception as e:
+        logger.error("Model evaluation failed: %s", e)
+        raise
+
+
+if __name__ == "__main__":
+    main()
