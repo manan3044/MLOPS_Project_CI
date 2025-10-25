@@ -10,14 +10,19 @@ stages:
       isexec: true
     - path: src/data_ingestion.py
       hash: md5
-      md5: 01306941f99b69d222866121497903ab
-      size: 431
+      md5: 223708da85716e527bd3a3cd37b1df64
+      size: 2461
       isexec: true
     outs:
-    - path: data/raw_data.csv
+    - path: data/processed/test_data.csv
       hash: md5
-      md5: fe1a9ce3b49a345d4ca37a0502a704e0
-      size: 528598
+      md5: 17c78179f48a71cc0f38f062fbf94361
+      size: 105884
+      isexec: true
+    - path: data/processed/train_data.csv
+      hash: md5
+      md5: 04b8025882b14314974b883a9376399d
+      size: 422805
       isexec: true
   data_preprocessing:
     cmd: python src/data_processing.py

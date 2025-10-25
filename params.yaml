@@ -1,6 +1,7 @@
+# params.yaml
+
 base:
   random_state: 42
-  test_size: 0.2
 
 data_ingestion:
   input_path: "data/indian_restaurant_waste_dataset.csv"
@@ -19,33 +20,21 @@ model_training:
   input_dir: "data/processed"
   output_dir: "models"
   random_state: 42
-
   models:
+    linear_regression:
+      file: "models/lr_model.joblib"
     random_forest:
+      file: "models/rf_model.joblib"
       n_estimators: 200
       max_depth: 8
-      min_samples_split: 5
-      min_samples_leaf: 2
-      random_state: 42
-      output_file: "models/rf_food_waste_model.pkl"
-
     xgboost:
+      file: "models/xgb_model.joblib"
       n_estimators: 300
       learning_rate: 0.05
       max_depth: 6
-      subsample: 0.8
-      colsample_bytree: 0.8
-      random_state: 42
-      output_file: "models/xgb_food_waste_model.pkl"
-
-    linear_regression:
-      fit_intercept: True
-      normalize: False
-      output_file: "models/lr_food_waste_model.pkl"
 
 model_evaluation:
   input_dir: "data/processed"
-  models_dir: "models"
-  metrics_txt: "metrics/metrics.txt"
-  metrics_json: "metrics/metrics.json"
+  model_dir: "models"
+  metrics_file: "metrics/metrics.json"
   comparison_plot: "metrics/model_comparison.png"
