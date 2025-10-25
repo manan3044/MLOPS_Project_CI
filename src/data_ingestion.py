@@ -46,8 +46,8 @@ def load_data(data_path: str) -> pd.DataFrame:
 def save_split_data(train_df: pd.DataFrame, test_df: pd.DataFrame, output_dir: str):
     try:
         os.makedirs(output_dir, exist_ok=True)
-        train_df.to_csv(os.path.join(output_dir, 'train.csv'), index=False)
-        test_df.to_csv(os.path.join(output_dir, 'test.csv'), index=False)
+        train_df.to_csv(os.path.join(output_dir, 'train_data.csv'), index=False)
+        test_df.to_csv(os.path.join(output_dir, 'test_data.csv'), index=False)
         logger.debug('Train and test data saved to %s', output_dir)
     except Exception as e:
         logger.error('Error saving train/test data: %s', e)
