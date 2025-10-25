@@ -1,0 +1,102 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: data/indian_restaurant_waste_dataset.csv
+      hash: md5
+      md5: 1d29374c4ce105fc7fe836f9f8e93864
+      size: 537749
+      isexec: true
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 01306941f99b69d222866121497903ab
+      size: 431
+      isexec: true
+    outs:
+    - path: data/raw_data.csv
+      hash: md5
+      md5: fe1a9ce3b49a345d4ca37a0502a704e0
+      size: 528598
+      isexec: true
+  data_preprocessing:
+    cmd: python src/data_processing.py
+    deps:
+    - path: data/raw_data.csv
+      hash: md5
+      md5: fe1a9ce3b49a345d4ca37a0502a704e0
+      size: 528598
+      isexec: true
+    - path: src/data_processing.py
+      hash: md5
+      md5: 88b0bd82172d990df40348db3bcefaea
+      size: 512
+      isexec: true
+    outs:
+    - path: data/processed/processed_data.csv
+      hash: md5
+      md5: fe1a9ce3b49a345d4ca37a0502a704e0
+      size: 528598
+      isexec: true
+  feature_engineering:
+    cmd: python src/feature_eng.py
+    deps:
+    - path: data/processed/processed_data.csv
+      hash: md5
+      md5: fe1a9ce3b49a345d4ca37a0502a704e0
+      size: 528598
+      isexec: true
+    - path: src/feature_eng.py
+      hash: md5
+      md5: 851d9d10c36f121867ec1245b04a8b8b
+      size: 539
+      isexec: true
+    outs:
+    - path: data/processed/feature_data.csv
+      hash: md5
+      md5: d2f0609656d22c11c492e637cdf21bcd
+      size: 419353
+      isexec: true
+  model_training:
+    cmd: python src/model_train.py
+    deps:
+    - path: data/processed/feature_data.csv
+      hash: md5
+      md5: d2f0609656d22c11c492e637cdf21bcd
+      size: 419353
+      isexec: true
+    - path: src/model_train.py
+      hash: md5
+      md5: fe6dad90cab15e213abef3e771b39e5d
+      size: 921
+      isexec: true
+    outs:
+    - path: models/xgb_food_waste_model.pkl
+      hash: md5
+      md5: 61ba9e8283eaaf49d2692ff43e394ba7
+      size: 1227567
+      isexec: true
+  model_evaluation:
+    cmd: python src/model_eval.py
+    deps:
+    - path: data/processed/feature_data.csv
+      hash: md5
+      md5: d2f0609656d22c11c492e637cdf21bcd
+      size: 419353
+      isexec: true
+    - path: models/xgb_food_waste_model.pkl
+      hash: md5
+      md5: 61ba9e8283eaaf49d2692ff43e394ba7
+      size: 1227567
+      isexec: true
+    - path: src/model_eval.py
+      hash: md5
+      md5: 0c3f7cb47f79c9fc72c9734a096619c3
+      size: 970
+      isexec: true
+    outs:
+    - path: metrics.txt
+      hash: md5
+      md5: bc2ca84185b19dd565bbe114d883de35
+      size: 71
+      isexec: true

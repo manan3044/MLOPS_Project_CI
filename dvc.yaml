@@ -3,15 +3,15 @@ stages:
     cmd: python src/data_ingestion.py
     deps:
       - src/data_ingestion.py
-      - data/raw/indian_restaurant_waste_dataset.csv
+      - data/indian_restaurant_waste_dataset.csv
     outs:
-      - data/raw/raw_data.csv
+      - data/raw_data.csv
 
   data_preprocessing:
     cmd: python src/data_processing.py
     deps:
       - src/data_processing.py
-      - data/raw/raw_data.csv
+      - data/raw_data.csv
     outs:
       - data/processed/processed_data.csv
 
@@ -28,14 +28,24 @@ stages:
     deps:
       - src/model_train.py
       - data/processed/feature_data.csv
+    params:
+      - model_training
     outs:
+      - models/rf_food_waste_model.pkl
       - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
 
   model_evaluation:
     cmd: python src/model_eval.py
     deps:
       - src/model_eval.py
-      - models/xgb_food_waste_model.pkl
       - data/processed/feature_data.csv
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
+    params:
+      - model_evaluation
     metrics:
-      - metrics.txt
+      - metrics/metrics.txt
+    outs:
+      - metrics/model_comparison.png

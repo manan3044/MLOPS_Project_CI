@@ -57,7 +57,7 @@ def save_split_data(train_df: pd.DataFrame, test_df: pd.DataFrame, output_dir: s
 def main():
     try:
         params = load_params('params.yaml')
-        data_path = params['data_ingestion']['data_path']
+        data_path = params['data_ingestion']['input_path']
         test_size = params['data_ingestion']['test_size']
         random_state = params['base']['random_state']
 
