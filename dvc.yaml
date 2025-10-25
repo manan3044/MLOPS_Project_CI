@@ -5,13 +5,15 @@ stages:
       - src/data_ingestion.py
       - data/indian_restaurant_waste_dataset.csv
     outs:
-      - data/raw_data.csv
+      - data/processed/train_data.csv
+      - data/processed/test_data.csv
 
   data_preprocessing:
     cmd: python src/data_processing.py
     deps:
       - src/data_processing.py
-      - data/raw_data.csv
+      - data/processed/train_data.csv
+      - data/processed/test_data.csv
     outs:
       - data/processed/processed_data.csv
 
