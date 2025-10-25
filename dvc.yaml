@@ -4,54 +4,50 @@ stages:
     deps:
       - src/data_ingestion.py
       - data/indian_restaurant_waste_dataset.csv
-      - params.yaml
     outs:
       - data/processed/train.csv
       - data/processed/test.csv
 
   data_preprocessing:
-    cmd: python src/data_preprocessing.py
+    cmd: python src/data_processing.py   # <-- updated filename
     deps:
-      - src/data_preprocessing.py
+      - src/data_processing.py
       - data/processed/train.csv
       - data/processed/test.csv
-      - params.yaml
     outs:
-      - data/processed/train_preprocessed.csv
-      - data/processed/test_preprocessed.csv
+      - data/processed/processed_data.csv
 
   feature_engineering:
-    cmd: python src/feature_engineering.py
+    cmd: python src/feature_eng.py  # <-- updated filename
     deps:
-      - src/feature_engineering.py
-      - data/processed/train_preprocessed.csv
-      - data/processed/test_preprocessed.csv
-      - params.yaml
+      - src/feature_eng.py
+      - data/processed/processed_data.csv
     outs:
-      - data/processed/train_fe.csv
-      - data/processed/test_fe.csv
+      - data/processed/feature_data.csv
 
   model_training:
-    cmd: python src/model_training.py
+    cmd: python src/model_train.py
     deps:
-      - src/model_training.py
-      - data/processed/train_fe.csv
-      - params.yaml
+      - src/model_train.py
+      - data/processed/feature_data.csv
+    params:
+      - model_training
     outs:
-      - models/lr_model.joblib
-      - models/rf_model.joblib
-      - models/xgb_model.joblib
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
 
   model_evaluation:
-    cmd: python src/model_evaluation.py
+    cmd: python src/model_eval.py  # <-- updated filename
     deps:
-      - src/model_evaluation.py
-      - data/processed/test_fe.csv
-      - models/lr_model.joblib
-      - models/rf_model.joblib
-      - models/xgb_model.joblib
-      - params.yaml
+      - src/model_eval.py
+      - data/processed/feature_data.csv
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
+    params:
+      - model_evaluation
     metrics:
-      - metrics/metrics.json
+      - metrics/metrics.txt
     outs:
       - metrics/model_comparison.png
