@@ -36,18 +36,18 @@ stages:
     params:
       - model_training
     outs:
-      - models/rf_food_waste_model.joblib
-      - models/xgb_food_waste_model.joblib
-      - models/lr_food_waste_model.joblib
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
 
   model_evaluation:
     cmd: python src/model_eval.py
     deps:
       - src/model_eval.py
       - data/processed/test_fe.csv
-      - models/rf_food_waste_model.joblib
-      - models/xgb_food_waste_model.joblib
-      - models/lr_food_waste_model.joblib
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
     params:
       - model_evaluation
     metrics:

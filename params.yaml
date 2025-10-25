@@ -1,68 +1,51 @@
-# params.yaml - fully aligned with all src/*.py scripts
-
 base:
   random_state: 42
+  test_size: 0.2
 
 data_ingestion:
-  # path to the original dataset
   input_path: "data/indian_restaurant_waste_dataset.csv"
+  output_dir: "data/processed"
   test_size: 0.2
-  random_state: 42
-  # outputs
-  train_output_path: "data/processed/train.csv"
-  test_output_path: "data/processed/test.csv"
 
 data_preprocessing:
-  # inputs are the train/test CSVs from ingestion
-  train_input_path: "data/processed/train.csv"
-  test_input_path: "data/processed/test.csv"
-  # outputs
-  train_output_path: "data/processed/train_preprocessed.csv"
-  test_output_path: "data/processed/test_preprocessed.csv"
+  input_dir: "data/processed"
+  output_dir: "data/processed"
 
 feature_engineering:
-  # inputs are the preprocessed CSVs
-  train_input_path: "data/processed/train_preprocessed.csv"
-  test_input_path: "data/processed/test_preprocessed.csv"
-  # outputs
-  train_output_path: "data/processed/train_fe.csv"
-  test_output_path: "data/processed/test_fe.csv"
+  input_dir: "data/processed"
+  output_dir: "data/processed"
 
 model_training:
-  # inputs
-  train_data_path: "data/processed/train_fe.csv"
-  # models output directory
-  models_output_dir: "models/"
-  # models hyperparameters
+  input_dir: "data/processed"
+  output_dir: "models"
+  random_state: 42
+
   models:
     random_forest:
-      model_path: "models/rf_food_waste_model.joblib"
       n_estimators: 200
       max_depth: 8
       min_samples_split: 5
       min_samples_leaf: 2
       random_state: 42
+      output_file: "models/rf_food_waste_model.pkl"
 
     xgboost:
-      model_path: "models/xgb_food_waste_model.joblib"
       n_estimators: 300
       learning_rate: 0.05
       max_depth: 6
       subsample: 0.8
       colsample_bytree: 0.8
       random_state: 42
+      output_file: "models/xgb_food_waste_model.pkl"
 
     linear_regression:
-      model_path: "models/lr_food_waste_model.joblib"
       fit_intercept: True
       normalize: False
+      output_file: "models/lr_food_waste_model.pkl"
 
 model_evaluation:
-  # input features for evaluation
-  test_data_path: "data/processed/test_fe.csv"
-  # models directory
-  models_dir: "models/"
-  # outputs
+  input_dir: "data/processed"
+  models_dir: "models"
   metrics_txt: "metrics/metrics.txt"
   metrics_json: "metrics/metrics.json"
   comparison_plot: "metrics/model_comparison.png"
