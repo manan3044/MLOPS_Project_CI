@@ -1,6 +1,17 @@
+# params.yaml - consolidated for all src/*.py scripts and dvc.yaml
+
+base:
+  random_state: 42
+
 data_ingestion:
+  # path to the original raw CSV (input)
+  data_path: "data/indian_restaurant_waste_dataset.csv"
+  # legacy/alternate name (some scripts used input_path) - keep both for safety
   input_path: "data/indian_restaurant_waste_dataset.csv"
+  # output produced by ingestion stage
   output_path: "data/raw_data.csv"
+  # test split
+  test_size: 0.2
 
 data_preprocessing:
   input_path: "data/raw_data.csv"
@@ -16,7 +27,7 @@ model_training:
   test_size: 0.2
   random_state: 42
 
-  # Model configurations
+  # list of models with hyperparameters and file paths
   models:
     random_forest:
       model_path: "models/rf_food_waste_model.pkl"
@@ -24,6 +35,7 @@ model_training:
       max_depth: 8
       min_samples_split: 5
       min_samples_leaf: 2
+      random_state: 42
 
     xgboost:
       model_path: "models/xgb_food_waste_model.pkl"
@@ -32,12 +44,21 @@ model_training:
       max_depth: 6
       subsample: 0.8
       colsample_bytree: 0.8
+      random_state: 42
 
     linear_regression:
       model_path: "models/lr_food_waste_model.pkl"
-      normalize: True
+      # sklearn LinearRegression has no explicit hyperparams here,
+      # keep placeholder for compatibility
+      fit_intercept: True
+      normalize: False
 
 model_evaluation:
+  # path to data used for evaluation (test or full feature data)
   data_path: "data/processed/feature_data.csv"
+  # where evaluation metrics will be saved
   metrics_output: "metrics/metrics.txt"
+  # comprehensive JSON for DVC metrics
+  metrics_json: "metrics/metrics.json"
+  # optional comparison plot
   comparison_plot: "metrics/model_comparison.png"
