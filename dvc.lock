@@ -144,3 +144,71 @@ stages:
       md5: 16ed50d2a39960959d6d746ae155d1b2
       size: 377918
       isexec: true
+  model_train:
+    cmd: python src/model_train.py
+    deps:
+    - path: data/processed/train_fe.csv
+      hash: md5
+      md5: 16ed50d2a39960959d6d746ae155d1b2
+      size: 377918
+      isexec: true
+    - path: src/model_train.py
+      hash: md5
+      md5: 9f5beda4699703a3a499cab38002f830
+      size: 2679
+      isexec: true
+    outs:
+    - path: models/lr_food_waste_model.pkl
+      hash: md5
+      md5: b85f61b086f495b59807a157021b21cf
+      size: 1057
+      isexec: true
+    - path: models/rf_food_waste_model.pkl
+      hash: md5
+      md5: 5cea2b810700ac9b4c3f7e4e165159e1
+      size: 5879809
+      isexec: true
+    - path: models/xgb_food_waste_model.pkl
+      hash: md5
+      md5: 4d38d4f1f1c903b0d8468d394d67c899
+      size: 1310568
+      isexec: true
+  model_eval:
+    cmd: python src/model_eval.py
+    deps:
+    - path: data/processed/test_fe.csv
+      hash: md5
+      md5: 448c7638cc0f2e30eb4f87ee0842946f
+      size: 94596
+      isexec: true
+    - path: models/lr_food_waste_model.pkl
+      hash: md5
+      md5: b85f61b086f495b59807a157021b21cf
+      size: 1057
+      isexec: true
+    - path: models/rf_food_waste_model.pkl
+      hash: md5
+      md5: 5cea2b810700ac9b4c3f7e4e165159e1
+      size: 5879809
+      isexec: true
+    - path: models/xgb_food_waste_model.pkl
+      hash: md5
+      md5: 4d38d4f1f1c903b0d8468d394d67c899
+      size: 1310568
+      isexec: true
+    - path: src/model_eval.py
+      hash: md5
+      md5: 1f8da47f5e9d1aa0def5b27217ec7eee
+      size: 2553
+      isexec: true
+    outs:
+    - path: metrics/metrics.json
+      hash: md5
+      md5: 0d4e45f5bf31fbb51043a883fcc2b889
+      size: 421
+      isexec: true
+    - path: metrics/metrics.txt
+      hash: md5
+      md5: 6d03bdd51a597ecfca535b4f97a27f6f
+      size: 344
+      isexec: true

@@ -1,0 +1,44 @@
+name: MLOps CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci_pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install dvc[s3]  # or any DVC remote you use
+
+    - name: Pull DVC data
+      run: dvc pull
+
+    - name: Run DVC pipeline
+      run: dvc repro --dry  # dry run to check the pipeline without running full training
+
+    - name: Run tests on data files
+      run: |
+        ls data/processed/
+        ls data/processed/train_preprocessed.csv
+        ls data/processed/test_preprocessed.csv
+
+    - name: Run tests on models (optional, fast check)
+      run: |
+        if [ -d "models" ]; then echo "Models directory exists"; fi
