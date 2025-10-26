@@ -17,9 +17,11 @@ fh.setFormatter(formatter)
 logger.addHandler(ch)
 logger.addHandler(fh)
 
+
 def load_params():
     with open("params.yaml") as f:
         return yaml.safe_load(f)
+
 
 def preprocess(df):
     df.fillna(method="ffill", inplace=True)
@@ -27,20 +29,27 @@ def preprocess(df):
         df["day_of_week"] = LabelEncoder().fit_transform(df["day_of_week"])
     return df
 
+
 def main():
     params = load_params()
-    input_dir = params["data_preprocessing"]["input_dir"]
+    train_in = params["data_preprocessing"]["input_train_path"]
+    test_in = params["data_preprocessing"]["input_test_path"]
+    train_out = params["data_preprocessing"]["output_train_path"]
+    test_out = params["data_preprocessing"]["output_test_path"]
 
-    train_df = pd.read_csv(os.path.join(input_dir, "train.csv"))
-    test_df = pd.read_csv(os.path.join(input_dir, "test.csv"))
+    train_df = pd.read_csv(train_in)
+    test_df = pd.read_csv(test_in)
 
     train_df = preprocess(train_df)
     test_df = preprocess(test_df)
 
-    output_dir = params["data_preprocessing"]["output_dir"]
-    train_df.to_csv(os.path.join(output_dir, "train_preprocessed.csv"), index=False)
-    test_df.to_csv(os.path.join(output_dir, "test_preprocessed.csv"), index=False)
-    logger.info("Data preprocessing completed")
+    os.makedirs(os.path.dirname(train_out), exist_ok=True)
+    train_df.to_csv(train_out, index=False)
+    test_df.to_csv(test_out, index=False)
+
+    logger.info("Data preprocessing completed successfully.")
+    logger.debug(f"Preprocessed train saved to {train_out}, test saved to {test_out}")
+
 
 if __name__ == "__main__":
     main()

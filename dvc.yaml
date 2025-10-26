@@ -5,49 +5,37 @@ stages:
       - src/data_ingestion.py
       - data/indian_restaurant_waste_dataset.csv
     outs:
-      - data/processed/train.csv
-      - data/processed/test.csv
+      - data/processed
 
   data_preprocessing:
-    cmd: python src/data_processing.py   # <-- updated filename
+    cmd: python src/data_processing.py
     deps:
       - src/data_processing.py
-      - data/processed/train.csv
-      - data/processed/test.csv
+      - data/processed
     outs:
-      - data/processed/processed_data.csv
+      - data/preprocessed
 
   feature_engineering:
-    cmd: python src/feature_eng.py  # <-- updated filename
+    cmd: python src/feature_eng.py
     deps:
       - src/feature_eng.py
-      - data/processed/processed_data.csv
+      - data/preprocessed
     outs:
-      - data/processed/feature_data.csv
+      - data/fe
 
   model_training:
     cmd: python src/model_train.py
     deps:
       - src/model_train.py
-      - data/processed/feature_data.csv
-    params:
-      - model_training
+      - data/fe
     outs:
-      - models/rf_food_waste_model.pkl
-      - models/xgb_food_waste_model.pkl
-      - models/lr_food_waste_model.pkl
+      - models
 
   model_evaluation:
-    cmd: python src/model_eval.py  # <-- updated filename
+    cmd: python src/model_eval.py
     deps:
       - src/model_eval.py
-      - data/processed/feature_data.csv
-      - models/rf_food_waste_model.pkl
-      - models/xgb_food_waste_model.pkl
-      - models/lr_food_waste_model.pkl
-    params:
-      - model_evaluation
-    metrics:
-      - metrics/metrics.txt
+      - data/fe
+      - models
     outs:
-      - metrics/model_comparison.png
+      - reports/metrics.json

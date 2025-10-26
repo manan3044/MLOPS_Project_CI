@@ -17,23 +17,33 @@ fh.setFormatter(formatter)
 logger.addHandler(ch)
 logger.addHandler(fh)
 
+
 def load_params():
     with open("params.yaml") as f:
         return yaml.safe_load(f)
 
+
 def main():
     params = load_params()
     data_path = params["data_ingestion"]["input_path"]
-    output_dir = params["data_ingestion"]["output_dir"]
+    train_out = params["data_ingestion"]["output_train_path"]
+    test_out = params["data_ingestion"]["output_test_path"]
     test_size = params["data_ingestion"]["test_size"]
+    random_state = params["base"]["random_state"]
 
+    # Load data
     df = pd.read_csv(data_path)
-    train_df, test_df = train_test_split(df, test_size=test_size, random_state=params["base"]["random_state"])
+    train_df, test_df = train_test_split(df, test_size=test_size, random_state=random_state)
 
-    os.makedirs(output_dir, exist_ok=True)
-    train_df.to_csv(os.path.join(output_dir, "train.csv"), index=False)
-    test_df.to_csv(os.path.join(output_dir, "test.csv"), index=False)
-    logger.info("Data ingestion completed")
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(train_out), exist_ok=True)
+
+    train_df.to_csv(train_out, index=False)
+    test_df.to_csv(test_out, index=False)
+
+    logger.info("Data ingestion completed successfully.")
+    logger.debug(f"Train saved to {train_out}, Test saved to {test_out}")
+
 
 if __name__ == "__main__":
     main()
