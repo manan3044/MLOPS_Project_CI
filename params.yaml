@@ -6,19 +6,19 @@ data_ingestion:
   output_dir: data/processed
   test_size: 0.2
 
-data_preprocessing:
+data_processing:
   input_train_path: data/processed/train.csv
   input_test_path: data/processed/test.csv
   output_train_path: data/processed/train_preprocessed.csv
   output_test_path: data/processed/test_preprocessed.csv
 
-feature_engineering:
+feature_eng:
   input_train_path: data/processed/train_preprocessed.csv
   input_test_path: data/processed/test_preprocessed.csv
   output_train_path: data/processed/train_fe.csv
   output_test_path: data/processed/test_fe.csv
 
-model_training:
+model_train:
   input_train_path: data/processed/train_fe.csv
   models_output_dir: models/
   random_state: 42
@@ -46,7 +46,7 @@ model_training:
       fit_intercept: True
       normalize: False
 
-model_evaluation:
+model_eval:
   input_test_path: data/processed/test_fe.csv
   models_dir: models/
   metrics_txt: metrics/metrics.txt
