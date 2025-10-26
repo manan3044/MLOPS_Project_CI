@@ -7,7 +7,7 @@ stages:
     outs:
       - data/processed
 
-  data_preprocessing:
+  data_processing:
     cmd: python src/data_processing.py
     deps:
       - src/data_processing.py
@@ -15,7 +15,7 @@ stages:
     outs:
       - data/preprocessed
 
-  feature_engineering:
+  feature_eng:
     cmd: python src/feature_eng.py
     deps:
       - src/feature_eng.py
@@ -23,7 +23,7 @@ stages:
     outs:
       - data/fe
 
-  model_training:
+  model_train:
     cmd: python src/model_train.py
     deps:
       - src/model_train.py
@@ -31,7 +31,7 @@ stages:
     outs:
       - models
 
-  model_evaluation:
+  model_eval:
     cmd: python src/model_eval.py
     deps:
       - src/model_eval.py
