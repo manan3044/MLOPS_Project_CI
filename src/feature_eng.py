@@ -6,10 +6,10 @@ import yaml
 # Logging
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-logger = logging.getLogger("feature_engineering")
+logger = logging.getLogger("feature_eng")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-fh = logging.FileHandler(os.path.join(log_dir, "feature_engineering.log"))
+fh = logging.FileHandler(os.path.join(log_dir, "feature_eng.log"))
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 fh.setFormatter(formatter)
@@ -31,7 +31,7 @@ def add_features(df):
 
 def main():
     params = load_params()
-    input_dir = params["feature_engineering"]["input_dir"]
+    input_dir = params["feature_eng"]["input_dir"]
 
     train_df = pd.read_csv(os.path.join(input_dir, "train_preprocessed.csv"))
     test_df = pd.read_csv(os.path.join(input_dir, "test_preprocessed.csv"))
@@ -39,7 +39,7 @@ def main():
     train_df = add_features(train_df)
     test_df = add_features(test_df)
 
-    output_dir = params["feature_engineering"]["output_dir"]
+    output_dir = params["feature_eng"]["output_dir"]
     train_df.to_csv(os.path.join(output_dir, "train_fe.csv"), index=False)
     test_df.to_csv(os.path.join(output_dir, "test_fe.csv"), index=False)
     logger.info("Feature engineering completed")

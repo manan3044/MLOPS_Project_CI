@@ -9,10 +9,10 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 # Logging
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-logger = logging.getLogger("model_evaluation")
+logger = logging.getLogger("model_eval")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-fh = logging.FileHandler(os.path.join(log_dir, "model_evaluation.log"))
+fh = logging.FileHandler(os.path.join(log_dir, "model_eval.log"))
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 fh.setFormatter(formatter)
@@ -33,9 +33,9 @@ def evaluate_model(model, X, y):
 
 def main():
     params = load_params()
-    input_dir = params["model_evaluation"]["input_dir"]
-    model_dir = params["model_evaluation"]["model_dir"]
-    metrics_file = params["model_evaluation"]["metrics_file"]
+    input_dir = params["model_eval"]["input_dir"]
+    model_dir = params["model_eval"]["model_dir"]
+    metrics_file = params["model_eval"]["metrics_file"]
 
     test_df = pd.read_csv(os.path.join(input_dir, "test_fe.csv"))
     X_test = test_df.drop(columns=["food_waste"])

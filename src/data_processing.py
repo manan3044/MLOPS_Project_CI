@@ -7,10 +7,10 @@ from sklearn.preprocessing import LabelEncoder
 # Logging
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-logger = logging.getLogger("data_preprocessing")
+logger = logging.getLogger("data_processing")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-fh = logging.FileHandler(os.path.join(log_dir, "data_preprocessing.log"))
+fh = logging.FileHandler(os.path.join(log_dir, "data_processing.log"))
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 fh.setFormatter(formatter)
@@ -29,10 +29,10 @@ def preprocess(df):
 
 def main():
     params = load_params()
-    train_in = params["data_preprocessing"]["input_train_path"]
-    test_in = params["data_preprocessing"]["input_test_path"]
-    train_out = params["data_preprocessing"]["output_train_path"]
-    test_out = params["data_preprocessing"]["output_test_path"]
+    train_in = params["data_processing"]["input_train_path"]
+    test_in = params["data_processing"]["input_test_path"]
+    train_out = params["data_processing"]["output_train_path"]
+    test_out = params["data_processing"]["output_test_path"]
 
     # Read data
     train_df = pd.read_csv(train_in)

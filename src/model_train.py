@@ -10,10 +10,10 @@ from xgboost import XGBRegressor
 # Logging
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-logger = logging.getLogger("model_training")
+logger = logging.getLogger("model_train")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-fh = logging.FileHandler(os.path.join(log_dir, "model_training.log"))
+fh = logging.FileHandler(os.path.join(log_dir, "model_train.log"))
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 fh.setFormatter(formatter)
@@ -26,9 +26,9 @@ def load_params():
 
 def main():
     params = load_params()
-    input_dir = params["model_training"]["input_dir"]
-    output_dir = params["model_training"]["output_dir"]
-    models_config = params["model_training"]["models"]
+    input_dir = params["model_train"]["input_dir"]
+    output_dir = params["model_train"]["output_dir"]
+    models_config = params["model_train"]["models"]
     random_state = params["base"]["random_state"]
 
     train_df = pd.read_csv(os.path.join(input_dir, "train_fe.csv"))
