@@ -6,6 +6,7 @@ import yaml
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
+from sklearn.preprocessing import LabelEncoder
 
 # Logging
 log_dir = "logs"
@@ -29,12 +30,21 @@ def main():
     train_in = params["model_train"]["input_train_path"]
     models_config = params["model_train"]["models"]
     random_state = params["base"]["random_state"]
+    models_output_dir = params["model_train"]["models_output_dir"]
 
     train_df = pd.read_csv(train_in)
-    X = train_df.drop(columns=["waste"])
-    y = train_df["waste"]
 
-    os.makedirs(params["model_train"]["models_output_dir"], exist_ok=True)
+    # Separate target
+    y = train_df["waste"]
+    X = train_df.drop(columns=["waste"])
+
+    # Encode categorical features
+    categorical_cols = X.select_dtypes(include="object").columns
+    for col in categorical_cols:
+        le = LabelEncoder()
+        X[col] = le.fit_transform(X[col])
+
+    os.makedirs(models_output_dir, exist_ok=True)
 
     for model_name, cfg in models_config.items():
         logger.info(f"Training {model_name}")
