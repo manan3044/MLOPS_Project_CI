@@ -40,7 +40,7 @@ def main():
 
     test_df = pd.read_csv(test_in)
     X_test = test_df.drop(columns=["waste"])
-    y_test = test_df["food_waste"]
+    y_test = test_df["waste"]
 
     results = {}
     for model_file in os.listdir(model_dir):
