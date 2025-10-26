@@ -39,7 +39,7 @@ def main():
     metrics_json = params["model_eval"]["metrics_json"]
 
     test_df = pd.read_csv(test_in)
-    X_test = test_df.drop(columns=["food_waste"])
+    X_test = test_df.drop(columns=["waste"])
     y_test = test_df["food_waste"]
 
     results = {}

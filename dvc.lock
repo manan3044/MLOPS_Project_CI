@@ -115,3 +115,32 @@ stages:
       md5: bc2ca84185b19dd565bbe114d883de35
       size: 71
       isexec: true
+  feature_eng:
+    cmd: python src/feature_eng.py
+    deps:
+    - path: data/processed/test_preprocessed.csv
+      hash: md5
+      md5: 448c7638cc0f2e30eb4f87ee0842946f
+      size: 94596
+      isexec: true
+    - path: data/processed/train_preprocessed.csv
+      hash: md5
+      md5: 16ed50d2a39960959d6d746ae155d1b2
+      size: 377918
+      isexec: true
+    - path: src/feature_eng.py
+      hash: md5
+      md5: b0d4eb06d3805fa692abee8fc5755512
+      size: 1297
+      isexec: true
+    outs:
+    - path: data/processed/test_fe.csv
+      hash: md5
+      md5: 448c7638cc0f2e30eb4f87ee0842946f
+      size: 94596
+      isexec: true
+    - path: data/processed/train_fe.csv
+      hash: md5
+      md5: 16ed50d2a39960959d6d746ae155d1b2
+      size: 377918
+      isexec: true

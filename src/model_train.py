@@ -31,8 +31,8 @@ def main():
     random_state = params["base"]["random_state"]
 
     train_df = pd.read_csv(train_in)
-    X = train_df.drop(columns=["food_waste"])
-    y = train_df["food_waste"]
+    X = train_df.drop(columns=["waste"])
+    y = train_df["waste"]
 
     os.makedirs(params["model_train"]["models_output_dir"], exist_ok=True)
 
