@@ -5,6 +5,7 @@ import logging
 import yaml
 import json
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.preprocessing import LabelEncoder
 
 # Logging
 log_dir = "logs"
@@ -39,8 +40,14 @@ def main():
     metrics_json = params["model_eval"]["metrics_json"]
 
     test_df = pd.read_csv(test_in)
-    X_test = test_df.drop(columns=["waste"])
     y_test = test_df["waste"]
+    X_test = test_df.drop(columns=["waste"])
+
+    # Encode categorical features
+    categorical_cols = X_test.select_dtypes(include="object").columns
+    for col in categorical_cols:
+        le = LabelEncoder()
+        X_test[col] = le.fit_transform(X_test[col])
 
     results = {}
     for model_file in os.listdir(model_dir):
@@ -56,6 +63,7 @@ def main():
         json.dump(results, f, indent=4)
     logger.info(f"Saved metrics JSON to {metrics_json}")
 
+    os.makedirs(os.path.dirname(metrics_txt), exist_ok=True)
     with open(metrics_txt, "w") as f:
         for model_name, metrics in results.items():
             f.write(f"{model_name}: {metrics}\n")
