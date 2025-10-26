@@ -24,23 +24,30 @@ stages:
     cmd: python src/feature_eng.py
     deps:
       - src/feature_eng.py
-      - data/processed
+      - data/processed/train_preprocessed.csv
+      - data/processed/test_preprocessed.csv
     outs:
-      - data/fe
+      - data/processed/train_fe.csv
+      - data/processed/test_fe.csv
 
   model_train:
     cmd: python src/model_train.py
     deps:
       - src/model_train.py
-      - data/fe
+      - data/processed/train_fe.csv
     outs:
-      - models
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
 
   model_eval:
     cmd: python src/model_eval.py
     deps:
       - src/model_eval.py
-      - data/fe
-      - models
+      - data/processed/test_fe.csv
+      - models/rf_food_waste_model.pkl
+      - models/xgb_food_waste_model.pkl
+      - models/lr_food_waste_model.pkl
     outs:
-      - reports/metrics.json
+      - metrics/metrics.txt
+      - metrics/metrics.json
