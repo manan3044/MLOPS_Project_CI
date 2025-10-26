@@ -6,6 +6,7 @@ import yaml
 import json
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.preprocessing import LabelEncoder
+import numpy as np
 
 # Logging
 log_dir = "logs"
@@ -26,9 +27,11 @@ def load_params():
 
 def evaluate_model(model, X, y):
     y_pred = model.predict(X)
+    mse = mean_squared_error(y, y_pred)
+    rmse = np.sqrt(mse)  # compute RMSE manually
     return {
         "MAE": mean_absolute_error(y, y_pred),
-        "RMSE": mean_squared_error(y, y_pred, squared=False),
+        "RMSE": rmse,
         "R2": r2_score(y, y_pred)
     }
 
