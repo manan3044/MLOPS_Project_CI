@@ -10,10 +10,10 @@ from xgboost import XGBRegressor
 # Logging
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-logger = logging.getLogger("model_train")
+logger = logging.getLogger("model_training")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-fh = logging.FileHandler(os.path.join(log_dir, "model_train.log"))
+fh = logging.FileHandler(os.path.join(log_dir, "model_training.log"))
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 fh.setFormatter(formatter)
@@ -26,16 +26,15 @@ def load_params():
 
 def main():
     params = load_params()
-    input_dir = params["model_train"]["input_dir"]
-    output_dir = params["model_train"]["output_dir"]
+    train_in = params["model_train"]["input_train_path"]
     models_config = params["model_train"]["models"]
     random_state = params["base"]["random_state"]
 
-    train_df = pd.read_csv(os.path.join(input_dir, "train_fe.csv"))
+    train_df = pd.read_csv(train_in)
     X = train_df.drop(columns=["food_waste"])
     y = train_df["food_waste"]
 
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(params["model_train"]["models_output_dir"], exist_ok=True)
 
     for model_name, cfg in models_config.items():
         logger.info(f"Training {model_name}")
@@ -45,6 +44,8 @@ def main():
             model = RandomForestRegressor(
                 n_estimators=cfg["n_estimators"],
                 max_depth=cfg["max_depth"],
+                min_samples_split=cfg["min_samples_split"],
+                min_samples_leaf=cfg["min_samples_leaf"],
                 random_state=random_state
             )
         elif model_name == "xgboost":
@@ -52,15 +53,18 @@ def main():
                 n_estimators=cfg["n_estimators"],
                 learning_rate=cfg["learning_rate"],
                 max_depth=cfg["max_depth"],
+                subsample=cfg["subsample"],
+                colsample_bytree=cfg["colsample_bytree"],
                 random_state=random_state,
                 objective="reg:squarederror",
                 verbosity=0
             )
         else:
             continue
+
         model.fit(X, y)
-        joblib.dump(model, cfg["file"])
-        logger.info(f"Saved {model_name} to {cfg['file']}")
+        joblib.dump(model, cfg["model_path"])
+        logger.info(f"Saved {model_name} to {cfg['model_path']}")
 
 if __name__ == "__main__":
     main()

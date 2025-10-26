@@ -9,10 +9,10 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 # Logging
 log_dir = "logs"
 os.makedirs(log_dir, exist_ok=True)
-logger = logging.getLogger("model_eval")
+logger = logging.getLogger("model_evaluation")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-fh = logging.FileHandler(os.path.join(log_dir, "model_eval.log"))
+fh = logging.FileHandler(os.path.join(log_dir, "model_evaluation.log"))
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 ch.setFormatter(formatter)
 fh.setFormatter(formatter)
@@ -33,27 +33,33 @@ def evaluate_model(model, X, y):
 
 def main():
     params = load_params()
-    input_dir = params["model_eval"]["input_dir"]
-    model_dir = params["model_eval"]["model_dir"]
-    metrics_file = params["model_eval"]["metrics_file"]
+    test_in = params["model_eval"]["input_test_path"]
+    model_dir = params["model_eval"]["models_dir"]
+    metrics_txt = params["model_eval"]["metrics_txt"]
+    metrics_json = params["model_eval"]["metrics_json"]
 
-    test_df = pd.read_csv(os.path.join(input_dir, "test_fe.csv"))
+    test_df = pd.read_csv(test_in)
     X_test = test_df.drop(columns=["food_waste"])
     y_test = test_df["food_waste"]
 
     results = {}
     for model_file in os.listdir(model_dir):
-        if model_file.endswith(".joblib"):
-            model_name = model_file.replace(".joblib","")
+        if model_file.endswith(".pkl"):
+            model_name = model_file.replace(".pkl", "")
             model = joblib.load(os.path.join(model_dir, model_file))
             metrics = evaluate_model(model, X_test, y_test)
             results[model_name] = metrics
             logger.info(f"Evaluated {model_name}: {metrics}")
 
-    os.makedirs(os.path.dirname(metrics_file), exist_ok=True)
-    with open(metrics_file, "w") as f:
+    os.makedirs(os.path.dirname(metrics_json), exist_ok=True)
+    with open(metrics_json, "w") as f:
         json.dump(results, f, indent=4)
-    logger.info(f"Saved metrics to {metrics_file}")
+    logger.info(f"Saved metrics JSON to {metrics_json}")
+
+    with open(metrics_txt, "w") as f:
+        for model_name, metrics in results.items():
+            f.write(f"{model_name}: {metrics}\n")
+    logger.info(f"Saved metrics TXT to {metrics_txt}")
 
 if __name__ == "__main__":
     main()
