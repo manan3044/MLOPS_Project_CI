@@ -7,30 +7,48 @@ data_ingestion:
   test_size: 0.2
 
 data_preprocessing:
-  input_dir: data/processed
-  output_dir: data/preprocessed
+  input_train_path: data/processed/train.csv
+  input_test_path: data/processed/test.csv
+  output_train_path: data/processed/train_preprocessed.csv
+  output_test_path: data/processed/test_preprocessed.csv
 
 feature_engineering:
-  input_dir: data/preprocessed
-  output_dir: data/fe
+  input_train_path: data/processed/train_preprocessed.csv
+  input_test_path: data/processed/test_preprocessed.csv
+  output_train_path: data/processed/train_fe.csv
+  output_test_path: data/processed/test_fe.csv
 
 model_training:
-  input_dir: data/fe
-  output_dir: models
+  input_train_path: data/processed/train_fe.csv
+  models_output_dir: models/
+  random_state: 42
+
   models:
-    linear_regression:
-      file: models/linear_regression.joblib
     random_forest:
-      n_estimators: 100
-      max_depth: 10
-      file: models/random_forest.joblib
-    xgboost:
+      model_path: models/rf_food_waste_model.pkl
       n_estimators: 200
-      learning_rate: 0.1
       max_depth: 8
-      file: models/xgboost.joblib
+      min_samples_split: 5
+      min_samples_leaf: 2
+      random_state: 42
+
+    xgboost:
+      model_path: models/xgb_food_waste_model.pkl
+      n_estimators: 300
+      learning_rate: 0.05
+      max_depth: 6
+      subsample: 0.8
+      colsample_bytree: 0.8
+      random_state: 42
+
+    linear_regression:
+      model_path: models/lr_food_waste_model.pkl
+      fit_intercept: True
+      normalize: False
 
 model_evaluation:
-  input_dir: data/fe
-  model_dir: models
-  metrics_file: reports/metrics.json
+  input_test_path: data/processed/test_fe.csv
+  models_dir: models/
+  metrics_txt: metrics/metrics.txt
+  metrics_json: metrics/metrics.json
+  comparison_plot: metrics/model_comparison.png
