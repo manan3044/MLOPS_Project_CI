@@ -13,13 +13,13 @@ stages:
       - src/data_processing.py
       - data/processed
     outs:
-      - data/preprocessed
+      - data/processed
 
   feature_eng:
     cmd: python src/feature_eng.py
     deps:
       - src/feature_eng.py
-      - data/preprocessed
+      - data/processed
     outs:
       - data/fe
 
