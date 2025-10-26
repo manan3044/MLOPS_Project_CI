@@ -8,27 +8,17 @@ stages:
       md5: 1d29374c4ce105fc7fe836f9f8e93864
       size: 537749
       isexec: true
-    - path: params.yaml
-      hash: md5
-      md5: e7b6e1b372453de3702f3181e080e696
-      size: 905
-      isexec: true
     - path: src/data_ingestion.py
       hash: md5
-      md5: 08dbd475c958083b50abab88192fab3c
-      size: 1267
+      md5: 07b0d8e7b80a816abfda4d744e3e125d
+      size: 1560
       isexec: true
     outs:
-    - path: data/processed/test.csv
+    - path: data/processed
       hash: md5
-      md5: 17c78179f48a71cc0f38f062fbf94361
-      size: 105884
-      isexec: true
-    - path: data/processed/train.csv
-      hash: md5
-      md5: 04b8025882b14314974b883a9376399d
-      size: 422805
-      isexec: true
+      md5: 904d6710fa5bd4f13d9325e871c10ebc.dir
+      size: 528689
+      nfiles: 2
   data_preprocessing:
     cmd: python src/data_processing.py
     deps:
